@@ -14,7 +14,7 @@ class characters(object):
 		self.speed = speed
 		
 class balls(object):
-	def __init__(self,height,width,x,y,speed,LorR, UorD):
+	def __init__(self,height,width,x,y,speed,LorR, UorD, WorL):
 		self.height = height
 		self.width = width
 		self.x = x
@@ -22,6 +22,7 @@ class balls(object):
 		self.speed = speed
 		self.LorR = LorR
 		self.UorD = UorD
+		self.WorL = WorL
 
 black = (0, 0, 0)
 white = (255,255,255)
@@ -31,7 +32,7 @@ blue = (1, 1, 255)
 run = True
 paddle1 = characters(100, 25, 10, 500/2 - 50, 10)
 paddle2 = characters(100, 25, 465, 500/2 - 50, 10)
-ball = balls(25, 25, 500/2, 500/2, 10, True, None)
+ball = balls(25, 25, 500/2, 500/2, 10, True, None, None)
 
 
 while run:
@@ -46,11 +47,17 @@ while run:
 	if keys[pygame.K_s]and paddle1.y < 500 - paddle1.height - paddle1.speed:
 		paddle1.y += paddle1.speed
 
-
-	if paddle2.y > ball.y - ball.height:
-		paddle2.y -= paddle2.speed - 2
-	elif paddle2.y < ball.y - ball.height:
-		paddle2.y += paddle2.speed - 2
+	if ball.y < paddle1.y + paddle1.height and ball.y > paddle1.y - paddle1.height/4:
+		print('placeholder')
+	else:
+		if paddle2.y > ball.y - ball.height:
+			paddle2.y -= paddle2.speed
+		elif paddle2.y < ball.y - ball.height:
+			paddle2.y += paddle2.speed
+	if ball.x > 500:
+		run = False
+	if ball.x < 0:
+		run = False
 	if ball.LorR:
 		ball.x -= 10
 	else:
@@ -64,15 +71,15 @@ while run:
 	if ball.y < 10 and ball.x > 0 and ball.x < 500:
 		ball.UorD = -1
 	if ball.x < paddle1.x + paddle1.width and ball.y < paddle1.y + paddle1.height and ball.y > paddle1.y - paddle1.height/4:
+		ball.UorD = 1
 		if ball.y < paddle1.y + paddle1.height - 75:
 			ball.UorD = 0
-			print('test')
 		elif ball.y > paddle1.y + 75:
 			ball.UorD = -1
-			print('test2')
 		ball.LorR = False
 	elif ball.x > paddle2.x - paddle2.width and ball.y < paddle2.y + paddle2.height and ball.y > paddle2.y - paddle2.height/4:
 		ball.LorR = True
+
 
 	win.fill((0,0,0))
 	pygame.draw.rect(win, red, (paddle1.x, paddle1.y, paddle1.width, paddle1.height))
